@@ -105,6 +105,13 @@ public class StepThree extends AppCompatActivity implements UserHandler.AsyncRes
         Log.e("OUT","DATA : "+output);
         spEditor = sp.edit();
         spEditor.putString("uid",output);
+        JSONObject usr = null;
+        try {
+            usr = new JSONObject(basics);
+            spEditor.putString("usr",usr.getString("name"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         spEditor.apply();
         Intent intent = new Intent(StepThree.this, StepFour.class);
         startActivity(intent);

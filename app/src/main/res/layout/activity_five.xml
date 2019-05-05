@@ -53,7 +53,7 @@
             tools:ignore="UselessParent">
 
             <ScrollView
-                android:id="@+id/two_scroll"
+                android:id="@+id/symptom_scroll"
                 android:layout_width="match_parent"
                 android:layout_height="250dp">
 
