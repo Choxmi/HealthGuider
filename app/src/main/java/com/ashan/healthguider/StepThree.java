@@ -53,7 +53,7 @@ public class StepThree extends AppCompatActivity implements UserHandler.AsyncRes
             }
         });
 
-        DataFetcher fetcher = new DataFetcher(StepThree.this,"symptoms",null,null);
+        DataFetcher fetcher = new DataFetcher(StepThree.this,"symptoms","1",null,null);
         fetcher.execute();
     }
 

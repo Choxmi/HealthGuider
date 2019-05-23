@@ -9,6 +9,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageButton;
+import android.util.Log;
 import android.view.View;
 
 import org.json.JSONArray;
@@ -16,31 +17,36 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class StepSix extends AppCompatActivity implements DataFetcher.DataResponse{
     private static int NUM_PAGES = 2;
     private ViewPager mPager;
     private PagerAdapter pagerAdapter;
     BinaryTree tree;
-    boolean[] results;
+    public static boolean[] results;
     int counter = 0;
     Node result_node;
+    private ArrayList<String> symptom_list;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        symptom_list = new ArrayList<>();
         setContentView(R.layout.activity_three);
         AppCompatImageButton button = (AppCompatImageButton)findViewById(R.id.three_button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Node result = calculate_results(tree.root);
+                Log.e("RES",result.toString());
                 Intent intent = new Intent(StepSix.this, StepSeven.class);
                 intent.putExtra("res",result);
                 startActivity(intent);
             }
         });
+        Log.e("SIX","Create MPager");
         mPager = (ViewPager) findViewById(R.id.ques_pager);
-        DataFetcher fetcher = new DataFetcher(StepSix.this,"questions",null,null);
+        DataFetcher fetcher = new DataFetcher(StepSix.this,"questions", getIntent().getStringExtra("symptom"),null,null);
         fetcher.execute();
     }
 
@@ -55,11 +61,12 @@ public class StepSix extends AppCompatActivity implements DataFetcher.DataRespon
 
     @Override
     public void processFinish(String output) throws JSONException {
+        Log.e("PROCESS",output);
         JSONArray jsonArray = new JSONArray(output);
         NUM_PAGES = jsonArray.length();
         pagerAdapter = new QuestionPagerAdapter(getSupportFragmentManager(),jsonArray);
         mPager.setAdapter(pagerAdapter);
-
+        Log.e("OutArr",jsonArray.toString());
         results = new boolean[jsonArray.length()];
 
         //Create Binary Tree
@@ -80,11 +87,14 @@ public class StepSix extends AppCompatActivity implements DataFetcher.DataRespon
             } else {
                 disease.add(obj.getString("symp_id"));
             }
-
             if (!symptoms.contains(obj.getString("symp_id"))) {
                 symptoms.add(obj.getString("symp_id"));
+                symptom_list.add(obj.getString("symp_id"));
             }
         }
+
+        Log.e("FULL", Arrays.toString(full_diseases.toArray()));
+
         tree = new BinaryTree();
         tree.root = new Node(full_diseases,symptoms.get(0));
         Node lroot = tree.root;
@@ -143,7 +153,13 @@ public class StepSix extends AppCompatActivity implements DataFetcher.DataRespon
             JSONObject obj = null;
             try {
                 obj = new JSONObject(String.valueOf(questions.getJSONObject(position)));
-                ques.setText(obj.getString("name"),obj.getString("id"));
+                Bundle param = new Bundle();
+                param.putString("question",obj.getString("symptom"));
+                param.putString("position",""+(position + 1));
+                param.putString("qid",obj.getString("symp_id"));
+                ques.setArguments(param);
+                ques.setText(obj.getString("symptom"),obj.getString("symp_id"));
+                Log.e("SYMPTOM",obj.getString("symptom"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

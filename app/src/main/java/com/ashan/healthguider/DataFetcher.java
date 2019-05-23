@@ -1,6 +1,7 @@
 package com.ashan.healthguider;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -28,13 +29,16 @@ public class DataFetcher extends AsyncTask<String,Integer,String> {
     }
     public DataResponse delegate = null;
     private URL getUrl;
-    public DataFetcher(DataResponse delegate, String cat, String sub_cat, String sub_val){
+    public DataFetcher(DataResponse delegate, String cat, String catval, String sub_cat, String sub_val){
         this.delegate = delegate;
         String url = "https://healthguider.000webhostapp.com/api/DataOps.php";
-//        if(cat!=null)
-//            url = "https://satprojects.000webhostapp.com/healthguider/SymptomOperations.php?"+cat+"=1";
-//        if(sub_cat!=null && sub_val!=null)
-//            url = "https://satprojects.000webhostapp.com/healthguider/SymptomOperations.php?"+cat+"=1&"+sub_cat+"="+sub_val;
+        if(cat!=null)
+            url = "https://healthguider.000webhostapp.com/api/DataOps.php?"+cat+"="+catval;
+        if(sub_cat!=null && sub_val!=null)
+            url = "https://healthguider.000webhostapp.com/api/DataOps.php?"+cat+"="+catval+"&"+sub_cat+"="+sub_val;
+
+        Log.e("URL",url);
+
         try {
             this.getUrl = new URL(url);
         } catch (MalformedURLException e) {
@@ -53,7 +57,7 @@ public class DataFetcher extends AsyncTask<String,Integer,String> {
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 responseString = bufferedReader.readLine();
             } else {
-                responseString = "FAILED"; // See documentation for more info on response handling
+                responseString = "FAILED";
             }
         } catch (IOException e) {
             //TODO Handle problems..
