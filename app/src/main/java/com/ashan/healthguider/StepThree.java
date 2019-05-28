@@ -48,6 +48,8 @@ public class StepThree extends AppCompatActivity implements UserHandler.AsyncRes
                 if(known!=null){
                     known = known.substring(0, known.length() - 1);
                 }
+                Log.e("BASIC",basics);
+                Log.e("Known",known);
                 UserHandler fetcher = new UserHandler(StepThree.this,basics,known);
                 fetcher.execute();
             }
@@ -103,6 +105,7 @@ public class StepThree extends AppCompatActivity implements UserHandler.AsyncRes
     @Override
     public void dataReceived(String output) {
         Log.e("OUT","DATA : "+output);
+        Toast.makeText(StepThree.this,output,Toast.LENGTH_LONG).show();
         spEditor = sp.edit();
         spEditor.putString("uid",output);
         JSONObject usr = null;

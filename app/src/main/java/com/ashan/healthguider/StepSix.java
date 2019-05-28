@@ -20,7 +20,11 @@ import org.json.JSONObject;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class StepSix extends AppCompatActivity implements DataFetcher.DataResponse, ItemsFetcher.DataResponse, MainListFetcher.DataResponse{
     private static int NUM_PAGES = 2;
@@ -33,11 +37,13 @@ public class StepSix extends AppCompatActivity implements DataFetcher.DataRespon
     private ArrayList<String> symptom_list;
     AppCompatImageButton proceed;
     ArrayList<Tree_Item> dise_map;
+    Map<String,ArrayList<String>> full_map;
     JSONArray filtered_array;
     ArrayList<String> base_list;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        full_map = new HashMap<>();
         dise_map = new ArrayList<>();
         symptom_list = new ArrayList<>();
         setContentView(R.layout.activity_three);
@@ -47,7 +53,16 @@ public class StepSix extends AppCompatActivity implements DataFetcher.DataRespon
             @Override
             public void onClick(View view) {
                 Node result = calculate_results(tree.root);
-                Log.e("RES",result.toString());
+                if(result == null){
+                    try {
+                        Log.e("RES", "Generating Result");
+                        result = generate_result();
+                        Log.e("RES", "OUT : "+result.data.get(0));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+//                    result = new Node();
+                }
                 Intent intent = new Intent(StepSix.this, StepSeven.class);
                 intent.putExtra("res",result);
                 startActivity(intent);
@@ -146,10 +161,23 @@ public class StepSix extends AppCompatActivity implements DataFetcher.DataRespon
     }
 
     private void build_tree(){
-        try {
-            tree = new BinaryTree(dise_map.get(filtered_array.getJSONObject(0).getString("symp_id")),filtered_array.getJSONObject(0).getString("symp_id"));
-        } catch (JSONException e) {
-            e.printStackTrace();
+        tree = new BinaryTree();
+        tree.root = new Node(dise_map.get(0).diseases,dise_map.get(0).symp);
+        Node lroot = tree.root;
+        Node rroot = tree.root;
+        for (int j = 1; j < dise_map.size(); j++) {
+            ArrayList<String> positive = dise_map.get(j-1).diseases;
+            ArrayList<String> positive_ = dise_map.get(j).diseases;
+            ArrayList<String> negative = dise_map.get(j-1).diseases;
+            ArrayList<String> negative_ = dise_map.get(j).diseases;
+
+            positive.retainAll(positive_);
+            negative.retainAll(negative_);
+
+            lroot.left = new Node(positive,dise_map.get(j).symp);
+            lroot.right = new Node(negative,dise_map.get(j).symp);
+            rroot.left = new Node(positive,dise_map.get(j).symp);
+            rroot.right = new Node(negative,dise_map.get(j).symp);
         }
     }
 
@@ -187,6 +215,7 @@ public class StepSix extends AppCompatActivity implements DataFetcher.DataRespon
         }
         Tree_Item itm = new Tree_Item(diseases, code);
         dise_map.add(itm);
+        full_map.put(code,diseases);
         itm_count++;
         if(itm_count == full_count){
             Toast.makeText(StepSix.this,"All Items received",Toast.LENGTH_LONG).show();
@@ -202,6 +231,34 @@ public class StepSix extends AppCompatActivity implements DataFetcher.DataRespon
         for(int i = 0; i < single_symptom.length(); i++) {
             base_list.add(single_symptom.getJSONObject(i).getString("dise_id"));
         }
+    }
+
+    private Node generate_result() throws JSONException {
+        List<ArrayList> truelist = new ArrayList<>();
+        for(int i = 0; i < results.length; i++){
+            if(results[i]){
+                truelist.add(full_map.get(filtered_array.getJSONObject(i).getString("symp_id")));
+            }
+        }
+
+        Collections.sort(truelist, new Comparator<ArrayList>(){
+            public int compare(ArrayList a1, ArrayList a2) {
+                return a2.size() - a1.size(); // assumes you want biggest to smallest
+            }
+        });
+
+        ArrayList<String> templist = truelist.get(0);
+        ArrayList<String> outlist = new ArrayList<>();
+        for (int j = 1; j < truelist.size(); j++) {
+            templist.retainAll(truelist.get(0));
+            Log.e("TAG",Arrays.toString(templist.toArray()));
+            if(templist!=null){
+                outlist = templist;
+            }
+        }
+
+        Node out = new Node(outlist, outlist.get(0));
+        return out;
     }
 
     private class QuestionPagerAdapter extends FragmentStatePagerAdapter {
