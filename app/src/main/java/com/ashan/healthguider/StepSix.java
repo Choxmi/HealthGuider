@@ -256,8 +256,12 @@ public class StepSix extends AppCompatActivity implements DataFetcher.DataRespon
                 outlist = templist;
             }
         }
-
-        Node out = new Node(outlist, outlist.get(0));
+        Node out = null;
+        if(templist!=null) {
+            out = new Node(outlist, outlist.get(0));
+        } else {
+            out = new Node(null,"NONE");
+        }
         return out;
     }
 

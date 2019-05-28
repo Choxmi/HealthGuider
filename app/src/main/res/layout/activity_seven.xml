@@ -36,7 +36,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:gravity="center_horizontal"
-                    android:text="Select your doctor..."
+                    android:text="Suggested doctor..."
                     android:textColor="#FCFFFFFF"
                     android:textColorHint="#00FFFFFF"
                     android:textSize="30sp" />
@@ -52,13 +52,50 @@
             android:orientation="vertical"
             tools:ignore="UselessParent">
 
-            <ScrollView
-                android:id="@+id/six_scroll"
+            <TextView
+                android:id="@+id/dis_id"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:background="@null">
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="TextView"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
 
-            </ScrollView>
+            <TextView
+                android:id="@+id/dis_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="TextView"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/doc_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="TextView"
+                android:textColor="@color/white"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/doc_contact"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="TextView"
+                android:textColor="@color/white"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/doc_hospital"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="TextView"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
         </LinearLayout>
 
         <LinearLayout

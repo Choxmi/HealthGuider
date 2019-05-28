@@ -42,14 +42,13 @@ public class StepThree extends AppCompatActivity implements UserHandler.AsyncRes
                 Log.e("Button","Clicked");
                 for(int i=0;i<10;i++){
                     if(selection[i]!=null){
-                        known+=("Item "+i+"|");
+                        known+=("|"+selection[i]);
                     }
                 }
                 if(known!=null){
                     known = known.substring(0, known.length() - 1);
                 }
-                Log.e("BASIC",basics);
-                Log.e("Known",known);
+
                 UserHandler fetcher = new UserHandler(StepThree.this,basics,known);
                 fetcher.execute();
             }

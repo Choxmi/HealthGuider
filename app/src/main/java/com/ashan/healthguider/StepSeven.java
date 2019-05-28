@@ -15,17 +15,21 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class StepSeven extends AppCompatActivity {
+public class StepSeven extends AppCompatActivity implements DataFetcher.DataResponse {
     Node result;
     TextView disease;
     PieChart pieChart ;
     ArrayList<PieEntry> entries ;
     ArrayList<String> PieEntryLabels ;
     PieDataSet pieDataSet ;
-    PieData pieData ;
+    PieData pieData;
+    String doc_response;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +41,15 @@ public class StepSeven extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(StepSeven.this, StepEight.class);
                 intent.putExtra("res",result.symptom_id);
+                intent.putExtra("doc",doc_response);
                 startActivity(intent);
             }
         });
         result = (Node) getIntent().getSerializableExtra("res");
         disease = (TextView)findViewById(R.id.disease_name_txt);
         disease.setText(result.symptom_id);
-
+        DataFetcher fetcher = new DataFetcher(StepSeven.this,"doctors", result.symptom_id, null, null);
+        fetcher.execute();
         pieChart = (PieChart) findViewById(R.id.chart);
 
         entries = new ArrayList<>();
@@ -80,5 +86,12 @@ public class StepSeven extends AppCompatActivity {
             PieEntryLabels.add(result.symptom_id);
         }
 
+    }
+
+    @Override
+    public void processFinish(String output) throws JSONException {
+        JSONArray doctors = new JSONArray(output);
+        disease.setText(doctors.getJSONObject(0).getString("disease"));
+        doc_response = output;
     }
 }
