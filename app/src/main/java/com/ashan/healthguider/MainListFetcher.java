@@ -1,7 +1,6 @@
 package com.ashan.healthguider;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.json.JSONException;
 
@@ -15,22 +14,16 @@ import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class DataFetcher extends AsyncTask<String,Integer,String> {
+public class MainListFetcher extends AsyncTask<String,Integer,String> {
 
     public interface DataResponse {
-        void processFinish(String output) throws JSONException;
+        void mainList(String output) throws JSONException;
     }
     public DataResponse delegate = null;
     private URL getUrl;
-    public DataFetcher(DataResponse delegate, String cat, String catval, String sub_cat, String sub_val){
+    public MainListFetcher(DataResponse delegate, String main_symp){
         this.delegate = delegate;
-        String url = "https://healthguider.000webhostapp.com/api/DataOps.php";
-        if(cat!=null)
-            url = "https://healthguider.000webhostapp.com/api/DataOps.php?"+cat+"="+catval;
-        if(sub_cat!=null && sub_val!=null)
-            url = "https://healthguider.000webhostapp.com/api/DataOps.php?"+cat+"="+catval+"&"+sub_cat+"="+sub_val;
-
-        Log.e("URL",url);
+        String url = "https://healthguider.000webhostapp.com/api/DataOps.php?full="+main_symp;
 
         try {
             this.getUrl = new URL(url);
@@ -61,7 +54,7 @@ public class DataFetcher extends AsyncTask<String,Integer,String> {
     @Override
     protected void onPostExecute(String result) {
         try {
-            delegate.processFinish(result);
+            delegate.mainList(result);
         } catch (JSONException e) {
             e.printStackTrace();
         }

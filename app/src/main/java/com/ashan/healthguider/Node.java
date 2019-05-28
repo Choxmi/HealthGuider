@@ -6,10 +6,10 @@ import java.util.ArrayList;
 class Node implements Serializable
 {
     String symptom_id;
-    ArrayList<ArrayList<String>> data;
+    ArrayList<String> data;
     Node left, right;
 
-    public Node(ArrayList<ArrayList<String>> item, String symptom_id)
+    public Node(ArrayList<String> item, String symptom_id)
     {
         data = item;
         this.symptom_id = symptom_id;
@@ -21,7 +21,7 @@ class BinaryTree
 {
     Node root;
 
-    BinaryTree(ArrayList<ArrayList<String>> key, String symptom)
+    BinaryTree(ArrayList<String> key, String symptom)
     {
         root = new Node(key,symptom);
     }

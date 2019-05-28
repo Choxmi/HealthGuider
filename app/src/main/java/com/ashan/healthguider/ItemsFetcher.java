@@ -15,22 +15,18 @@ import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class DataFetcher extends AsyncTask<String,Integer,String> {
+public class ItemsFetcher extends AsyncTask<String,Integer,String> {
 
     public interface DataResponse {
-        void processFinish(String output) throws JSONException;
+        void itemReceived(String output, String code) throws JSONException;
     }
     public DataResponse delegate = null;
     private URL getUrl;
-    public DataFetcher(DataResponse delegate, String cat, String catval, String sub_cat, String sub_val){
+    String req_code = null;
+    public ItemsFetcher(DataResponse delegate, String main_symp, String sub_symp){
         this.delegate = delegate;
-        String url = "https://healthguider.000webhostapp.com/api/DataOps.php";
-        if(cat!=null)
-            url = "https://healthguider.000webhostapp.com/api/DataOps.php?"+cat+"="+catval;
-        if(sub_cat!=null && sub_val!=null)
-            url = "https://healthguider.000webhostapp.com/api/DataOps.php?"+cat+"="+catval+"&"+sub_cat+"="+sub_val;
-
-        Log.e("URL",url);
+        req_code = sub_symp;
+        String url = "https://healthguider.000webhostapp.com/api/DataOps.php?main="+main_symp+"&item="+sub_symp;
 
         try {
             this.getUrl = new URL(url);
@@ -61,7 +57,7 @@ public class DataFetcher extends AsyncTask<String,Integer,String> {
     @Override
     protected void onPostExecute(String result) {
         try {
-            delegate.processFinish(result);
+            delegate.itemReceived(result,req_code);
         } catch (JSONException e) {
             e.printStackTrace();
         }
