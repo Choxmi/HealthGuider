@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageButton;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -33,6 +34,7 @@ public class StepSix extends AppCompatActivity implements DataFetcher.DataRespon
     BinaryTree tree;
     public static boolean[] results;
     int counter, itm_count, full_count = 0;
+    String disease = "";
     Node result_node;
     private ArrayList<String> symptom_list;
     AppCompatImageButton proceed;
@@ -52,19 +54,19 @@ public class StepSix extends AppCompatActivity implements DataFetcher.DataRespon
         proceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Node result = calculate_results(tree.root);
-                if(result == null){
-                    try {
-                        Log.e("RES", "Generating Result");
-                        result = generate_result();
-                        Log.e("RES", "OUT : "+result.data.get(0));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-//                    result = new Node();
-                }
-                Intent intent = new Intent(StepSix.this, StepSeven.class);
-                intent.putExtra("res",result);
+//                Node result = calculate_results(tree.root);
+//                if(result == null){
+//                    try {
+//                        Log.e("RES", "Generating Result");
+//                        result = generate_result();
+//                        Log.e("RES", "OUT : "+result.data.get(0));
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+////                    result = new Node();
+//                }
+                Intent intent = new Intent(StepSix.this, QuestionActivity.class);
+                intent.putExtra("dis",disease);
                 startActivity(intent);
             }
         });
@@ -85,27 +87,30 @@ public class StepSix extends AppCompatActivity implements DataFetcher.DataRespon
 
     @Override
     public void processFinish(String output) throws JSONException {
-        Log.e("PROCESS",output);
         JSONArray jsonArray = new JSONArray(output);
 
-        filtered_array = new JSONArray();
+//        filtered_array = new JSONArray();
+//
+//        int sampling_rate = (jsonArray.length())/10;
+//        for(int i =0; i < jsonArray.length(); i=i+sampling_rate){
+//            filtered_array.put(jsonArray.get(i));
+//        }
+//        NUM_PAGES = filtered_array.length();
+//        pagerAdapter = new QuestionPagerAdapter(getSupportFragmentManager(),filtered_array);
+//        mPager.setAdapter(pagerAdapter);
+//        Log.e("OutArr",filtered_array.toString());
+//        results = new boolean[filtered_array.length()];
+//        full_count = filtered_array.length();
+//        dise_map.clear();
+//        for(int i =0; i < filtered_array.length(); i++){
+//            ItemsFetcher itemsFetcher = new ItemsFetcher(StepSix.this,getIntent().getStringExtra("symptom"),filtered_array.getJSONObject(i).getString("symp_id"));
+//            itemsFetcher.execute();
+//        }
 
-        int sampling_rate = (jsonArray.length())/10;
-        for(int i =0; i < jsonArray.length(); i=i+sampling_rate){
-            filtered_array.put(jsonArray.get(i));
-        }
-        NUM_PAGES = filtered_array.length();
-        pagerAdapter = new QuestionPagerAdapter(getSupportFragmentManager(),filtered_array);
-        mPager.setAdapter(pagerAdapter);
-        Log.e("OutArr",filtered_array.toString());
-        results = new boolean[filtered_array.length()];
-        full_count = filtered_array.length();
-        dise_map.clear();
-        for(int i =0; i < filtered_array.length(); i++){
-            ItemsFetcher itemsFetcher = new ItemsFetcher(StepSix.this,getIntent().getStringExtra("symptom"),filtered_array.getJSONObject(i).getString("symp_id"));
-            itemsFetcher.execute();
-        }
-
+        Log.e("PROCESS",output);
+        JSONObject obj = jsonArray.getJSONObject(0);
+        ((TextView)findViewById(R.id.diseTxt)).setText(obj.getString("disease"));
+        disease = obj.getString("disease");
         //Create Binary Tree
 
 //        String previous_disease = null;

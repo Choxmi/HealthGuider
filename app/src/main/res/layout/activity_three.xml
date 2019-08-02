@@ -35,7 +35,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:gravity="center_horizontal"
-                    android:text="Tell us more..."
+                    android:text="Prediction..."
                     android:textColor="#FCFFFFFF"
                     android:textColorHint="#00FFFFFF"
                     android:textSize="30sp" />
@@ -49,12 +49,24 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:orientation="horizontal"
+            android:visibility="visible"
             tools:ignore="UselessParent">
+
+            <TextView
+                android:id="@+id/diseTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Disease Loading"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="36sp" />
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/ques_pager"
                 android:layout_width="match_parent"
-                android:layout_height="300dp" />
+                android:layout_height="300dp"
+                android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
@@ -85,11 +97,12 @@
 
                         <TextView
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="14dp"
                             android:gravity="center"
                             android:text="10/10"
                             android:textColor="#FFFFFF"
-                            android:textSize="18sp" />
+                            android:textSize="18sp"
+                            android:visibility="gone" />
                     </LinearLayout>
 
                     <android.support.v7.widget.AppCompatImageButton

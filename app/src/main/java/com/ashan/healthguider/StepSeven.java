@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageButton;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.BarEntry;
@@ -39,16 +40,25 @@ public class StepSeven extends AppCompatActivity implements DataFetcher.DataResp
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(StepSeven.this, StepEight.class);
-                intent.putExtra("res",result.symptom_id);
-                intent.putExtra("doc",doc_response);
-                startActivity(intent);
+                if(getIntent().getIntExtra("res",0) > 5) {
+                    Intent intent = new Intent(StepSeven.this, StepEight.class);
+                    intent.putExtra("res", String.valueOf(getIntent().getIntExtra("res", 0)));
+                    intent.putExtra("doc", doc_response);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(StepSeven.this,"You don't need a doctor",Toast.LENGTH_LONG).show();
+                }
             }
         });
-        result = (Node) getIntent().getSerializableExtra("res");
+//        result = (Node) getIntent().getSerializableExtra("res");
         disease = (TextView)findViewById(R.id.disease_name_txt);
-        disease.setText(result.symptom_id);
-        DataFetcher fetcher = new DataFetcher(StepSeven.this,"doctors", result.symptom_id, null, null);
+        if(getIntent().getIntExtra("res",0) > 5) {
+            disease.setText(getIntent().getStringExtra("dis"));
+        } else {
+            disease.setText("Normal");
+        }
+        Toast.makeText(StepSeven.this,""+getIntent().getIntExtra("res",0),Toast.LENGTH_LONG).show();
+        DataFetcher fetcher = new DataFetcher(StepSeven.this,"doctors", String.valueOf(getIntent().getIntExtra("res",0)), null, null);
         fetcher.execute();
         pieChart = (PieChart) findViewById(R.id.chart);
 
@@ -56,9 +66,9 @@ public class StepSeven extends AppCompatActivity implements DataFetcher.DataResp
 
         PieEntryLabels = new ArrayList<String>();
 
-        AddValuesToPIEENTRY();
+        AddValuesToPIEENTRY(getIntent().getIntExtra("res",0));
 
-        AddValuesToPieEntryLabels();
+        AddValuesToPieEntryLabels(getIntent().getStringExtra("dis"));
 
         pieDataSet = new PieDataSet(entries, "Diseases");
 
@@ -72,26 +82,24 @@ public class StepSeven extends AppCompatActivity implements DataFetcher.DataResp
 
     }
 
-    public void AddValuesToPIEENTRY(){
+    public void AddValuesToPIEENTRY(int count){
 
-        for(int i = 0; i < result.data.size(); i++){
-            entries.add(new PieEntry(100/result.data.size(), 300));
-        }
+        entries.add(new PieEntry(count, 300));
+        entries.add(new PieEntry((11-count), 300));
 
     }
 
-    public void AddValuesToPieEntryLabels(){
+    public void AddValuesToPieEntryLabels(String disease){
 
-        for(int i = 0; i < result.data.size(); i++){
-            PieEntryLabels.add(result.symptom_id);
-        }
+        PieEntryLabels.add(disease);
+        PieEntryLabels.add("Normal");
 
     }
 
     @Override
     public void processFinish(String output) throws JSONException {
         JSONArray doctors = new JSONArray(output);
-        disease.setText(doctors.getJSONObject(0).getString("disease"));
+//        disease.setText(doctors.getJSONObject(0).getString("disease"));
         doc_response = output;
     }
 }

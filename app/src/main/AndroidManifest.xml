@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ashan.healthguider">
+
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,13 +11,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".StepThree"></activity>
-        <activity android:name=".StepSix"></activity>
-        <activity android:name=".StepSeven"></activity>
-        <activity android:name=".StepFive"></activity>
-        <activity android:name=".StepFour"></activity>
-        <activity android:name=".StepEight"></activity>
-        <activity android:name=".StepTwo"></activity>
+        <activity android:name=".QuestionActivity"></activity>
+        <activity android:name=".StepThree" />
+        <activity android:name=".StepSix" />
+        <activity android:name=".StepSeven" />
+        <activity android:name=".StepFive" />
+        <activity android:name=".StepFour" />
+        <activity android:name=".StepEight" />
+        <activity android:name=".StepTwo" />
         <activity android:name=".StepOne">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
